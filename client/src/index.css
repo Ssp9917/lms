@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base Colors */
+    --background: #f8f9fa;
+    /* Light Gray */
+    --foreground: #212529;
+    /* Dark Gray */
+    --primary: #3b82f6;
+    /* Blue */
+    --primary-foreground: #ffffff;
+    /* White */
+    --secondary: #22c55e;
+    /* Green */
+    --secondary-foreground: #ffffff;
+    /* White */
+    --muted: #6c757d;
+    /* Muted Gray */
+    --muted-foreground: #f8f9fa;
+    /* Light Gray */
+    --accent: #facc15;
+    /* Yellow */
+    --accent-foreground: #212529;
+    /* Dark Gray */
+    --destructive: #ef4444;
+    /* Red */
+    --destructive-foreground: #ffffff;
+    /* White */
+
+    /* Border, Input, and Ring */
+    --border: #dee2e6;
+    /* Light Gray */
+    --input: #e9ecef;
+    /* Very Light Gray */
+    --ring: #3b82f6;
+    /* Blue */
+
+    /* Card and Popover */
+    --card: #ffffff;
+    /* White */
+    --card-foreground: #212529;
+    /* Dark Gray */
+    --popover: #ffffff;
+    /* White */
+    --popover-foreground: #212529;
+    /* Dark Gray */
+
+    /* Chart Colors */
+    --chart-1: #3b82f6;
+    /* Blue */
+    --chart-2: #22c55e;
+    /* Green */
+    --chart-3: #facc15;
+    /* Yellow */
+    --chart-4: #ef4444;
+    /* Red */
+    --chart-5: #a855f7;
+    /* Purple */
+
+    /* Radius */
+    --radius: 8px;
+  }
+}
+
+.dark {
+  --background: #212529;
+  /* Dark Gray */
+  --foreground: #f8f9fa;
+  /* Light Gray */
+  --primary: #60a5fa;
+  /* Light Blue */
+  --primary-foreground: #212529;
+  /* Dark Gray */
+  --secondary: #4ade80;
+  /* Light Green */
+  --secondary-foreground: #212529;
+  /* Dark Gray */
+  --muted: #495057;
+  /* Muted Gray */
+  --muted-foreground: #dee2e6;
+  /* Light Gray */
+  --accent: #fbbf24;
+  /* Light Yellow */
+  --accent-foreground: #212529;
+  /* Dark Gray */
+  --destructive: #dc2626;
+  /* Light Red */
+  --destructive-foreground: #212529;
+  /* Dark Gray */
+  --card: #343a40;
+  /* Dark Card Background */
+  --card-foreground: #f8f9fa;
+  /* Light Card Text */
+  --popover: #343a40;
+  /* Dark Popover Background */
+  --popover-foreground: #f8f9fa;
+  /* Light Popover Text */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
