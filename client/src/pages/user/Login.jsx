@@ -15,6 +15,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import useSignup from "@/hooks/useSignup"
 import { useState } from "react"
 
 const Login = () => {
@@ -22,7 +23,8 @@ const Login = () => {
     const [signupInput, setSignupInput] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        confirmPassword:"",
     })
 
     const [loginInput, setLoginInput] = useState({
@@ -38,11 +40,18 @@ const Login = () => {
         } else {
             setLoginInput({ ...loginInput, [name]: value })
         }
-
     }
+
+    const {signup,loading} = useSignup()
 
     const handleRegistration = (type) => {
         const inputData = type === "signup" ? signupInput : loginInput
+
+        if(type === "signup"){
+            signup({...inputData})
+        }else{
+
+        }
     }
 
     return (
@@ -90,6 +99,18 @@ const Login = () => {
                                     id="password"
                                     name="password"
                                     value={signupInput.password}
+                                    onChange={(e)=>inputChangeHandler(e,"signup")}
+                                    defaultValue="Eg. xyz"
+                                    type='password'
+                                    required="true"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                <Input
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    value={signupInput.confirmPassword}
                                     onChange={(e)=>inputChangeHandler(e,"signup")}
                                     defaultValue="Eg. xyz"
                                     type='password'

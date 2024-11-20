@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { model } from "mongoose";
 
 const courseSchema = new mongoose.Schema({
     courseTitle:{
@@ -12,8 +12,8 @@ const courseSchema = new mongoose.Schema({
         type:String
     },
     category:{
-        type:String,
-        required:true
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category"
     },
     courseLevel:{
         type:String,
@@ -46,3 +46,6 @@ const courseSchema = new mongoose.Schema({
         default:false
     }
 },{timestamps:true})
+
+const Course = model('Course', courseSchema);
+export default Course

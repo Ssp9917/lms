@@ -1,14 +1,19 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useAuthContext } from '@/context/AuthContext'
 import DarkMode from '@/Darkmode'
 import { School } from 'lucide-react'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
 
-    const user = true
+    const {authUser} = useAuthContext()
+
+    console.log(authUser)
+
+    const navigate = useNavigate()
 
     const logoutHandler = () => {
 
@@ -28,11 +33,11 @@ const Navbar = () => {
                 {/* User icons and dark mode icon */}
                 <div className='flex items-center gap-8'>
                     {
-                        user ? (
+                        authUser? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Avatar>
-                                        <AvatarImage src={user?.photoUrl || "https://github.com/shadcn.png"} alt='@shadcn' />
+                                        <AvatarImage src={authUser?.photoUrl || "https://github.com/shadcn.png"} alt='@shadcn' />
                                         <AvatarFallback />
                                     </Avatar>
                                 </DropdownMenuTrigger>
@@ -51,7 +56,7 @@ const Navbar = () => {
                                             Log out
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
-                                    {user?.role === "instructor" && (
+                                    {authUser?.role === "instructor" && (
                                         <>
                                             <DropdownMenuSeparator />
                                             <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
@@ -64,7 +69,7 @@ const Navbar = () => {
                                 <Button variant="outline" onClick={() => navigate("/login")}>
                                     Login
                                 </Button>
-                                <Button onClick={() => navigate("/login")}>Signup</Button>
+                                <Button variant="outline" onClick={() => navigate("/login")}>Signup</Button>
                             </div>
                         )
                     }
