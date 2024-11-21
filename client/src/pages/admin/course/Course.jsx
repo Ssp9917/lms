@@ -31,7 +31,7 @@ const Course = () => {
     const renderRow = (course, index) => (
         <tr
             key={course._id}
-            className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+            className="border-b border-gray-200  text-sm hover:bg-lamaPurpleLight"
         >
             <td className=" pl-3">{index + 1}</td> {/* Serial Number */}
             <td className="flex items-center gap-4 p-4">
@@ -52,7 +52,7 @@ const Course = () => {
             <td><Badge>{course.isPublished ? "Published" : "Draft"}</Badge></td>
             <td>
                 <div className="flex items-center gap-2">
-                    <button className="h-7 gap-2 w-full flex items-center  rounded-full bg-lamaSky">
+                    <button className="h-7 gap-2 w-full flex items-center  rounded-full ">
                         <Link to={`/admin/course/editCourse/${course._id}`}> <FaEdit size={16} /></Link>
                         {/* <Link onClick={() => handleDelete(course._id)}><MdDeleteForever size={16} /></Link> */}
                     </button>

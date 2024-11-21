@@ -3,7 +3,7 @@ import AdminMain from "@/layout/admin/AdminMain";
 import Main from "@/layout/user/Main";
 import { Courses, HeroSection, Login } from "@/pages/user";
 import CourseDetail from "@/pages/user/CourseDetail";
-import { AddCategory, AddCourse, Category, Course, CreateLeacture, EditCategory, EditCourse, ViewCourse } from "@/pages/admin";
+import { AddCategory, AddCourse, Category, Course, CreateLeacture, EditCategory, EditCourse, EditLeacture, ViewCourse } from "@/pages/admin";
 
 
 
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
                 </>
             },
             {
-                path: "course-detail/:id",
+                path: "course-detail/:courseId",
                 element: <CourseDetail />
             },
             {
@@ -48,6 +48,10 @@ const router = createBrowserRouter([
             {
                 path: "course/editCourse/:courseId/lecture",
                 element: <CreateLeacture />
+            },
+            {
+                path:"course/editCourse/:courseId/lecture/:lectureId",
+                element:<EditLeacture/>
             },
             {
                 path:"course/viewCourse/:id",

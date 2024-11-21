@@ -29,11 +29,53 @@ export const courseSlice = apiSlice.injectEndpoints({
 
         // create lecture
         createLecture: builder.mutation({
-            query: (lecture) => ({
-                url: 'course/addLecture',
+            query: ({ lectureTitle, courseId }) => ({
+                url: `course/${courseId}/addLecture`,
                 method: 'POST',
-                body: lecture,
+                body: { lectureTitle },
             }),
+        }),
+
+        // get all Lectures
+        getCourseLecture: builder.query({
+            query: (courseId) => ({
+                url: `course/${courseId}/lecture`,
+                method: "GET",
+            }),
+            // providesTags: ["Refetch_Lecture"],
+        }),
+
+        // get lecture by id
+        getLectureById: builder.query({
+            query: (lectureId) => ({
+                url: `course/lecture/${lectureId}`,
+                method: "GET",
+            }),
+        }),
+
+        // getPublishedCourses courses
+        getPublishedCourse:builder.query({
+            query:()=>({
+                url:'course/getPublishedCourses',
+                method:"GET"
+            })
+        }),
+
+        // edit lecture
+        editLecture: builder.mutation({
+            query: ({ courseId, lectureId,
+                lectureTitle,
+                videoInfo,
+                isPreviewFree,
+            }) => ({
+                url: `/course/${courseId}/lecture/${lectureId}`,
+                method: "PUT",
+                body: {
+                    lectureTitle,
+                    videoInfo,
+                    isPreviewFree,
+                }
+            })
         })
 
         // deleteCategory: builder.mutation({
@@ -46,9 +88,13 @@ export const courseSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-   useGetAllCourseQuery,
-   useAddCourseMutation,
-   useGetCourseByIdQuery,
-   useEditCourseMutation,
-   useCreateLectureMutation
+    useGetAllCourseQuery,
+    useAddCourseMutation,
+    useGetCourseByIdQuery,
+    useEditCourseMutation,
+    useCreateLectureMutation,
+    useGetCourseLectureQuery,
+    useGetLectureByIdQuery,
+    useEditLectureMutation,
+    useGetPublishedCourseQuery
 } = courseSlice;

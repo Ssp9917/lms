@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import {
-//   useCreateLectureMutation,
-//   useGetCourseLectureQuery,
-// } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // import { toast } from "sonner";
 import Lecture from "./Lecture";
+import { useCreateLectureMutation, useGetCourseLectureQuery } from "@/api/courseSlice";
+import Swal from "sweetalert2";
 
 const CreateLecture = () => {
   const [lectureTitle, setLectureTitle] = useState("");
@@ -17,42 +15,31 @@ const CreateLecture = () => {
   const courseId = params.courseId;
   const navigate = useNavigate();
 
-//   const [createLecture, { data, isLoading, isSuccess, error }] =
-//     useCreateLectureMutation();
 
-//   const {
-//     data: lectureData,
-//     isLoading: lectureLoading,
-//     isError: lectureError,
-//     refetch,
-//   } = useGetCourseLectureQuery(courseId);
+  const [createLecture, { data, isLoading, isSuccess, error }] = useCreateLectureMutation()
+
+    const {
+      data: lectureData,
+      isLoading: lectureLoading,
+      isError: lectureError,
+      refetch,
+    } = useGetCourseLectureQuery(courseId)
 
   const createLectureHandler = async () => {
-    // await createLecture({ lectureTitle, courseId });
+    await createLecture({ lectureTitle, courseId });
   };
 
-//   useEffect(() => {
-//     if (isSuccess) {
-//       refetch();
-//     //   toast.success(data.message);
-//     }
-//     if (error) {
-//     //   toast.error(error.data.message);
-//     }
-//   }, [isSuccess, error]);
+  useEffect(() => {
+    if (isSuccess) {
+      Swal.fire("Success", "Lecture added successfully!", "success");
+      // refetch();
+    }
+    if (error) {
+      Swal.fire("Error", `${error.data.message}`, "error");
+    }
+  }, [isSuccess, error]);
 
-const isLoading = false
-const lectureLoading = false
-const lectureError = false
-
-const lectureData  = {
-    lectures:[
-        {
-            lectureTitle:"React Basics"
-        }
-    ]
-}
-console.log(lectureData);
+  console.log(lectureData);
 
   return (
     <div className="flex-1 mx-10">

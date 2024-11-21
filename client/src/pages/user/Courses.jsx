@@ -1,69 +1,74 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react'
 import Course from './Course';
+import { useGetPublishedCourseQuery } from '@/api/courseSlice';
 
 const Courses = () => {
+    // const data ={
+    //      courses: [
+    //         {
+    //           _id: "1",
+    //           courseThumbnail: "https://via.placeholder.com/300x150",
+    //           courseTitle: "React for Beginners",
+    //           creator: {
+    //             name: "John Doe",
+    //             photoUrl: "https://via.placeholder.com/50",
+    //           },
+    //           courseLevel: "Beginner",
+    //           coursePrice: 499,
+    //         },
+    //         {
+    //           _id: "2",
+    //           courseThumbnail: "https://via.placeholder.com/300x150",
+    //           courseTitle: "Mastering Node.js",
+    //           creator: {
+    //             name: "Jane Smith",
+    //             photoUrl: "https://via.placeholder.com/50",
+    //           },
+    //           courseLevel: "Intermediate",
+    //           coursePrice: 799,
+    //         },
+    //         {
+    //           _id: "3",
+    //           courseThumbnail: "https://via.placeholder.com/300x150",
+    //           courseTitle: "Full-Stack Development Bootcamp",
+    //           creator: {
+    //             name: "Mike Johnson",
+    //             photoUrl: "https://via.placeholder.com/50",
+    //           },
+    //           courseLevel: "Advanced",
+    //           coursePrice: 999,
+    //         },
+    //         {
+    //           _id: "4",
+    //           courseThumbnail: "https://via.placeholder.com/300x150",
+    //           courseTitle: "JavaScript Essentials",
+    //           creator: {
+    //             name: "Emily Davis",
+    //             photoUrl: "https://via.placeholder.com/50",
+    //           },
+    //           courseLevel: "Beginner",
+    //           coursePrice: 299,
+    //         },
+    //         {
+    //           _id: "5",
+    //           courseThumbnail: "https://via.placeholder.com/300x150",
+    //           courseTitle: "CSS for Modern Web Design",
+    //           creator: {
+    //             name: "Chris Lee",
+    //             photoUrl: "https://via.placeholder.com/50",
+    //           },
+    //           courseLevel: "Intermediate",
+    //           coursePrice: 499,
+    //         },
+    //       ]
+    // }
 
-    const isLoading = false
-    const data ={
-         courses: [
-            {
-              _id: "1",
-              courseThumbnail: "https://via.placeholder.com/300x150",
-              courseTitle: "React for Beginners",
-              creator: {
-                name: "John Doe",
-                photoUrl: "https://via.placeholder.com/50",
-              },
-              courseLevel: "Beginner",
-              coursePrice: 499,
-            },
-            {
-              _id: "2",
-              courseThumbnail: "https://via.placeholder.com/300x150",
-              courseTitle: "Mastering Node.js",
-              creator: {
-                name: "Jane Smith",
-                photoUrl: "https://via.placeholder.com/50",
-              },
-              courseLevel: "Intermediate",
-              coursePrice: 799,
-            },
-            {
-              _id: "3",
-              courseThumbnail: "https://via.placeholder.com/300x150",
-              courseTitle: "Full-Stack Development Bootcamp",
-              creator: {
-                name: "Mike Johnson",
-                photoUrl: "https://via.placeholder.com/50",
-              },
-              courseLevel: "Advanced",
-              coursePrice: 999,
-            },
-            {
-              _id: "4",
-              courseThumbnail: "https://via.placeholder.com/300x150",
-              courseTitle: "JavaScript Essentials",
-              creator: {
-                name: "Emily Davis",
-                photoUrl: "https://via.placeholder.com/50",
-              },
-              courseLevel: "Beginner",
-              coursePrice: 299,
-            },
-            {
-              _id: "5",
-              courseThumbnail: "https://via.placeholder.com/300x150",
-              courseTitle: "CSS for Modern Web Design",
-              creator: {
-                name: "Chris Lee",
-                photoUrl: "https://via.placeholder.com/50",
-              },
-              courseLevel: "Intermediate",
-              coursePrice: 499,
-            },
-          ]
-    }
+    const {data, isLoading, isError} = useGetPublishedCourseQuery();
+
+    console.log(data)
+ 
+    if(isError) return <h1>Some error occurred while fetching courses.</h1>
 
     return (
         <div className="bg-gray-50 dark:bg-[#141414]">

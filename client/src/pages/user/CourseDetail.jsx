@@ -1,3 +1,4 @@
+import { useGetCourseDetailWithStatusQuery } from "@/api/purchaseSlice";
 import BuyCourseButton from "@/components/BuyCourseButton";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,21 +15,22 @@ import React from "react";
 import ReactPlayer from "react-player";
 import { useNavigate, useParams } from "react-router-dom";
 
-// import { useGetCourseDetailWithStatusQuery } from "@/features/api/purchaseApi";
-
 
 const CourseDetail = () => {
     const params = useParams();
     const courseId = params.courseId;
     const navigate = useNavigate();
-    // const { data, isLoading, isError } =
-    //     useGetCourseDetailWithStatusQuery(courseId);
+    const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL
+    const { data, isLoading, isError } =
+        useGetCourseDetailWithStatusQuery(courseId);
 
-    // if (isLoading) return <h1>Loading...</h1>;
-    // if (isError) return <h>Failed to load course details</h>;
+    console.log(data)
 
-    // const { course, purchased } = data;
-    const purchased = false
+    if (isLoading) return <h1>Loading...</h1>;
+    if (isError) return <h>Failed to load course details</h>;
+
+    const { course, purchased } = data;
+
 
     const handleContinueCourse = () => {
         if (purchased) {
@@ -41,40 +43,37 @@ const CourseDetail = () => {
             <div className="bg-[#2D2F31] text-white">
                 <div className="max-w-7xl mx-auto py-8 px-4 md:px-8 flex flex-col gap-2">
                     <h1 className="font-bold text-2xl md:text-3xl">
-                        {/* {course?.courseTitle} */}
-                        React for Beginners
+                        {course?.courseTitle}
+
                     </h1>
-                    <p className="text-base md:text-lg">Course Sub-title</p>
+                    <p className="text-base md:text-lg">{course?.subTitle}</p>
                     <p>
                         Created By{" "}
                         <span className="text-[#C0C4FC] underline italic">
-                            {/* {course?.creator.name} */}
-                            Sonu sharma
-
+                            {course?.creator.name}
                         </span>
                     </p>
                     <div className="flex items-center gap-2 text-sm">
                         <BadgeInfo size={16} />
-                        <p>Last updated
-                            {/* {course?.createdAt.split("T")[0]} */}
-                            12-05-2004
+                        <p><span className="pr-3">Last updated</span>
+                            {course?.createdAt.split("T")[0]}
+
                         </p>
                     </div>
                     <p>Students enrolled:
-                        {/* {course?.enrolledStudents.length} */}
-                        10
+                        {course?.enrolledStudents.length}
                     </p>
                 </div>
             </div>
-            <div className="max-w-7xl mx-auto my-5 px-4 md:px-8 flex flex-col lg:flex-row justify-between gap-10">
-                <div className="w-full lg:w-1/2 space-y-5">
+            <div className="max-w-7xl bg-background mx-auto py-5 px-4 !mt-0 md:px-8 flex flex-col lg:flex-row justify-between gap-10">
+                <div className="w-full  lg:w-1/2 space-y-5">
                     <h1 className="font-bold text-xl md:text-2xl">Description</h1>
                     <p
                         className="text-sm"
-                        dangerouslySetInnerHTML={{ __html: 
-                            // course.description
-                            "Hello this is a react basic course"
-                         }}
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                course.description
+                        }}
                     />
                     <Card>
                         <CardHeader>
@@ -82,14 +81,14 @@ const CourseDetail = () => {
                             <CardDescription>4 lectures</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3">
-                            {/* {course.lectures.map((lecture, idx) => (
+                            {course.lectures.map((lecture, idx) => (
                                 <div key={idx} className="flex items-center gap-3 text-sm">
                                     <span>
                                         {true ? <PlayCircle size={14} /> : <Lock size={14} />}
                                     </span>
                                     <p>{lecture.lectureTitle}</p>
                                 </div>
-                            ))} */}
+                            ))}
                         </CardContent>
                     </Card>
                 </div>
@@ -101,15 +100,14 @@ const CourseDetail = () => {
                                     width="100%"
                                     height={"100%"}
                                     url={
-                                        // course.lectures[0].videoUrl
-                                        "https://youtube.com"
+                                        `${backendUrl}/${course.lectures[0].videoUrl}`
                                     }
                                     controls={true}
                                 />
                             </div>
-                            <h1>Lecture title</h1>
+                            <h1>Lecture title : {course.lectures[0].lectureTitle}</h1>
                             <Separator className="my-2" />
-                            <h1 className="text-lg md:text-xl font-semibold">Course Price</h1>
+                            <h1 className="text-lg md:text-xl font-semibold">Course Price : {course?.coursePrice}</h1>
                         </CardContent>
                         <CardFooter className="flex justify-center p-4">
                             {purchased ? (
