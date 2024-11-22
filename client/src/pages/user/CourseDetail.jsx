@@ -20,7 +20,7 @@ const CourseDetail = () => {
     const params = useParams();
     const courseId = params.courseId;
     const navigate = useNavigate();
-    const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL
+    const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL;
     const { data, isLoading, isError } =
         useGetCourseDetailWithStatusQuery(courseId);
 

@@ -1,4 +1,4 @@
-import { useGetAllCourseQuery } from '@/api/courseSlice'
+import { useGetAllCourseQuery, usePublishCourseMutation } from '@/api/courseSlice'
 import Table from '@/components/Table'
 import TableSearch from '@/components/TableSearch'
 import { Badge } from '@/components/ui/badge'
@@ -6,14 +6,31 @@ import React from 'react'
 import { FaEdit, FaFilter, FaPlusCircle, FaSortAmountDown } from 'react-icons/fa'
 import { MdDeleteForever } from 'react-icons/md'
 import { Link, useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const Course = () => {
 
     const navigate = useNavigate()
 
-    const { data, isLoading } = useGetAllCourseQuery();
+    const { data, isLoading,refetch } = useGetAllCourseQuery();
 
     const courseData = data?.courses || []
+
+    const [publishCourse, { }] = usePublishCourseMutation();
+
+    const publishStatusHandler = async (courseId,action) => {
+        try {
+            const response = await publishCourse({ courseId, query: action });
+            if (response.data) {
+                refetch();
+                Swal.fire("Success",`${response.data.message}`)
+                // toast.success(response.data.message);
+            }
+        } catch (error) {
+            Swal.fire("Error","Failed to publish or inpublish course")
+            // toast.error("Failed to publish or unpublish course");
+        }
+    }
 
     const handleDelete = () => {
 
@@ -49,7 +66,7 @@ const Course = () => {
             <td>
                 {course?.coursePrice || "NA"}
             </td>
-            <td><Badge>{course.isPublished ? "Published" : "Draft"}</Badge></td>
+            <td><Badge className="cursor-pointer" onClick={()=>{publishStatusHandler(course._id,course.isPublished ? false : true)}}>{course.isPublished ? "Published" : "Draft"}</Badge></td>
             <td>
                 <div className="flex items-center gap-2">
                     <button className="h-7 gap-2 w-full flex items-center  rounded-full ">

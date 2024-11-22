@@ -31,15 +31,23 @@ const CreateLecture = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      setLectureTitle("")
       Swal.fire("Success", "Lecture added successfully!", "success");
-      // refetch();
+      refetch();
     }
     if (error) {
       Swal.fire("Error", `${error.data.message}`, "error");
     }
   }, [isSuccess, error]);
 
-  console.log(lectureData);
+  // run refetch if user come on first time
+  useEffect(
+    ()=>{
+      refetch()
+    },[]
+  )
+
+
 
   return (
     <div className="flex-1 mx-10">

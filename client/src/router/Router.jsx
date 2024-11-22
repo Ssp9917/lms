@@ -1,9 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import AdminMain from "@/layout/admin/AdminMain";
 import Main from "@/layout/user/Main";
-import { Courses, HeroSection, Login } from "@/pages/user";
+import { Courses, HeroSection, Login, SearchPage } from "@/pages/user";
 import CourseDetail from "@/pages/user/CourseDetail";
 import { AddCategory, AddCourse, Category, Course, CreateLeacture, EditCategory, EditCourse, EditLeacture, ViewCourse } from "@/pages/admin";
+
 
 
 
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
             {
                 path: "course-detail/:courseId",
                 element: <CourseDetail />
+            },
+            {
+                path:"course/search",
+                element:<SearchPage/>
             },
             {
                 path: "login",

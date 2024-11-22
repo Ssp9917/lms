@@ -1,4 +1,4 @@
-import { useEditLectureMutation, useGetLectureByIdQuery } from '@/api/courseSlice'
+import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from '@/api/courseSlice'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,7 @@ import axios from 'axios'
 import { Loader2 } from 'lucide-react'
 // import { Input } from 'postcss'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 
 const LectureTab = () => {
@@ -27,8 +27,10 @@ const LectureTab = () => {
 
   const { data: lectureData } = useGetLectureByIdQuery(lectureId);
   const lecture = lectureData?.lecture
+  const navigate = useNavigate()
 
-  const [editLecture, {data, isLoading, isSuccess, error }] = useEditLectureMutation()
+  const [editLecture, { data, isLoading, isSuccess, error }] = useEditLectureMutation();
+  const [removeLecture, { data: removeData, isLoading: removeLoading, isSuccess: removeSuccess }] = useRemoveLectureMutation();
 
 
 
@@ -67,11 +69,11 @@ const LectureTab = () => {
             videoUrl: res.data.data
           });
           setBtnDisable(false);
-          Swal.fire("Success", `${res.data.message}`)
+          Swal.fire("Success", `${res.data.message}`,"success")
         }
       } catch (error) {
         console.log(error)
-        Swal.fire("Error", "Video upload failed")
+        Swal.fire("Error", "Video upload failed","error")
       } finally {
         setMediaProgress(false)
       }
@@ -93,12 +95,23 @@ const LectureTab = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      Swal.fire("Success",`${data.message}`)
+      Swal.fire("Success", `${data.message}`, 'success')
     }
     if (error) {
-      Swal.fire("Error",`${error.data.message}`)
+      Swal.fire("Error", `${error.data.message}`, 'error')
     }
   }, [isSuccess, error]);
+
+  const removeLectureHandler = async (lectureId) => {
+    await removeLecture(lectureId);
+  }
+
+  useEffect(() => {
+    if (removeSuccess) {
+      Swal.fire("Success",`${removeData.message}`,"success");
+      navigate(`/admin/course/editCourse/${courseId}/lecture`)
+    }
+  }, [removeSuccess])
 
 
   return (
@@ -111,7 +124,7 @@ const LectureTab = () => {
           </CardDescription>
         </div>
         <div className='fles items-center gap-2'>
-          <Button variant="destructive">Remove Lecture</Button>
+          <Button variant="destructive" onClick={() => { removeLectureHandler(lectureId) }}>Remove Lecture</Button>
         </div>
       </CardHeader>
 

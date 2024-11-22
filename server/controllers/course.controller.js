@@ -1,5 +1,9 @@
+import { fileURLToPath } from "url";
+import Category from "../models/category.model.js";
 import Course from "../models/course.model.js";
 import { Lecture } from "../models/lecture.model.js";
+import fs from 'fs';
+import path from 'path';
 
 // add a course
 export const addCourse = async (req, res) => {
@@ -31,6 +35,99 @@ export const addCourse = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" })
     }
 }
+
+// get search corse
+
+export const getSearchCourse = async (req, res) => {
+    try {
+        const { query = "", categories = [], sortByPrice = "" } = req.query;
+
+        console.log("Query Params:", { query, categories, sortByPrice });
+
+        // Build regex for the query
+        const queryRegex = new RegExp(query, "i");
+
+        // Step 1: Find category IDs if `category` is a reference
+        let categoryIds = [];
+        if (query && !categories.length) {
+            const matchingCategories = await Category.find({ name: queryRegex });
+            categoryIds = matchingCategories.map((cat) => cat._id);
+        }
+
+        // Step 2: Construct search criteria
+        const searchCriteria = {
+            isPublished: true,
+            $or: [
+                { courseTitle: queryRegex },
+                { subTitle: queryRegex },
+            ],
+        };
+
+        if (categories.length > 0) {
+            // Use directly provided category IDs
+            searchCriteria.category = { $in: categories };
+        } else if (categoryIds.length > 0) {
+            // Use fetched category IDs based on query
+            searchCriteria.category = { $in: categoryIds };
+        }
+
+        // Step 3: Fetch courses
+        let courses = await Course.find(searchCriteria).populate({
+            path: "creator",
+            select: "name photoUrl",
+        });
+
+        // console.log(sortByPrice)
+        // Step 4: Sort courses
+        if (sortByPrice == "high") {
+            // console.log("high coll")
+            // console.log(courses)
+            courses = courses.sort((a, b) => a.coursePrice - b.coursePrice);
+        } else if (sortByPrice == "low") {
+            // console.log("low call")
+            // console.log(courses)
+            courses = courses.sort((a, b) => b.coursePrice - a.coursePrice);
+        }
+
+        return res.status(200).json({
+            success: true,
+            courses: courses || [],
+        });
+    } catch (error) {
+        console.error("Error in getSearchCourse controller:", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+// toggel publish course
+export const toggelPublishCourse = async (req,res) => {
+    try {
+        const {courseId} = req.params;
+        const {publish} = req.query; //true, false
+
+        const course = await Course.findById(courseId);
+
+        if(!course){
+            return res.status(404).json({
+                message:"Course not found"
+            });
+        }
+
+        // publish status based on the query parameter
+        course.isPublished = publish === "true";
+        await course.save()
+
+        const statusMessage = course.isPublished ? "Published" : "Unpublished";
+
+        return res.status(200).json({
+            message:`Course is ${statusMessage}`
+        })
+
+    } catch (error) {
+        console.log("Error in toggelPublishCourse",error.message);
+        res.status(500).json({message:"Internal server error"})        
+    }
+} 
 
 // get creatorCourses
 export const getCreatorCourses = async (req, res) => {
@@ -237,3 +334,48 @@ export const getPublishedCourse = async (req, res) => {
         res.status(500).json({ message: "Internal server error" })
     }
 }
+
+// remove lecture
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const removeLecture = async (req, res) => {
+    try {
+        const { lectureId } = req.params;
+
+        // Find lecture
+        const lecture = await Lecture.findByIdAndDelete(lectureId);
+
+        if (!lecture) {
+            return res.status(404).json({ message: "Lecture not found" });
+        }
+        console.log(__dirname,lecture)
+        // Delete the lecture video from the uploads folder
+        if (lecture.videoUrl) {
+            const filePath = path.join(__dirname, '..', 'uploads', lecture.videoUrl.replace(/^uploads[\\/]/, '')); // Remove "uploads/" prefix if it exists
+
+
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.log("Error deleting video file:", err.message);
+                } else {
+                    console.log("Lecture video file deleted successfully.");
+                }
+            });
+        }
+
+        // Remove the lecture from the associated course
+        await Course.updateOne(
+            { lectures: lectureId }, // Find the course containing this lecture
+            { $pull: { lectures: lectureId } } // Remove the lecture's ID from the lectures array
+        );
+
+        return res.status(200).json({
+            message: "Lecture removed successfully.",
+        });
+    } catch (error) {
+        console.log("Error in removeLecture controller", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+

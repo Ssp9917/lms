@@ -10,11 +10,42 @@ export const courseSlice = apiSlice.injectEndpoints({
             query: (id) => `course/getCourseById/${id}`
         }),
 
+        getSearchCourse: builder.query({
+            query: ({ searchQuery, categories, sortByPrice }) => {
+                // Build qiery string
+                let queryString = `course/getSearchCourse?query=${encodeURIComponent(searchQuery)}`
+
+                // append cateogry 
+                if (categories && categories.length > 0) {
+                    const categoriesString = categories.map(encodeURIComponent).join(",");
+                    queryString += `&categories=${categoriesString}`;
+                }
+
+                // Append sortByPrice is available
+                if (sortByPrice) {
+                    queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
+                }
+
+                return {
+                    url: queryString,
+                    method: "GET",
+                }
+            }
+        }),
+
         addCourse: builder.mutation({
             query: (course) => ({
                 url: 'course/addCourse',
                 method: 'POST',
                 body: course,
+            }),
+        }),
+
+        // toggel publish course
+        publishCourse: builder.mutation({
+            query: ({ courseId, query }) => ({
+                url: `course/${courseId}?publish=${query}`,
+                method: "PATCH",
             }),
         }),
 
@@ -45,6 +76,15 @@ export const courseSlice = apiSlice.injectEndpoints({
             // providesTags: ["Refetch_Lecture"],
         }),
 
+        // remove lecture
+        removeLecture: builder.mutation({
+            query: (lectureId) => ({
+                url: `course/lecture/${lectureId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Refetch_Lecture"],
+        }),
+
         // get lecture by id
         getLectureById: builder.query({
             query: (lectureId) => ({
@@ -54,10 +94,10 @@ export const courseSlice = apiSlice.injectEndpoints({
         }),
 
         // getPublishedCourses courses
-        getPublishedCourse:builder.query({
-            query:()=>({
-                url:'course/getPublishedCourses',
-                method:"GET"
+        getPublishedCourse: builder.query({
+            query: () => ({
+                url: 'course/getPublishedCourses',
+                method: "GET"
             })
         }),
 
@@ -77,13 +117,6 @@ export const courseSlice = apiSlice.injectEndpoints({
                 }
             })
         })
-
-        // deleteCategory: builder.mutation({
-        //     query: (id) => ({
-        //         url: `category/deleteCategory/${id}`, // Make sure this URL is correct
-        //         method: 'DELETE',
-        //     }),
-        // }),
     }),
 });
 
@@ -96,5 +129,8 @@ export const {
     useGetCourseLectureQuery,
     useGetLectureByIdQuery,
     useEditLectureMutation,
-    useGetPublishedCourseQuery
+    useGetPublishedCourseQuery,
+    useGetSearchCourseQuery,
+    usePublishCourseMutation,
+    useRemoveLectureMutation
 } = courseSlice;
